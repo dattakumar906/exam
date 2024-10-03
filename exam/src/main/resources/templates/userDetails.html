@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Registration</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #f0f4f8, #d9e3f0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display:contents; /* Flex container for side-by-side layout */
+            align-items: flex-start; /* Aligns images and form to the top */
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column; /* Stack images vertically */
+            margin-right: 20px; /* Space between images and form */
+        }
+
+        .image-container img {
+            max-width: 600%; /* Responsive width */
+            max-height: 150px; /* Maximum height for images */
+            object-fit: cover; /* Cover the area without stretching */
+            margin-bottom: 10px; /* Space between images */
+            border-radius: 8px; /* Rounded corners for images */
+            transition: transform 0.3s ease; /* Image hover effect */
+        }
+
+        .image-container img:hover {
+            transform: scale(1.05); /* Scale up on hover */
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Fixed width for the form */
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-size: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #007bff;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .social-icons img {
+            width: 30px;
+            height: 30px;
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <img src="https://media.licdn.com/dms/image/v2/D5622AQF6uSI_bqWtlw/feedshare-shrink_800/feedshare-shrink_800/0/1725003922287?e=2147483647&v=beta&t=qLUzv2EGvpLWI-Sc9ochOypuywsnVol-uXFCOx90Krc" alt="Brand Image 1" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6R3iEaqyFBjxTwTtIh7qZ8ilFHsqLaK9wGyZWUtNBWyfVn-YGKl3kUODuT6_3mDt0uwY&usqp=CAU" alt="Brand Image 2" />
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbs2lODGv003f5qr1D6p8buG8oHQq1dx-naQ&s" alt="Brand Image 3" />
+        </div>
+        
+        <div class="form-container">
+            <h1>Enter Your Details</h1>
+            <form th:action="@{/exam/register}" th:object="${userDetails}" method="post">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="Enter your name" required />
+                    <span class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="mobileNo">Mobile Number:</label>
+                    <input type="text" id="mobileNo" th:field="*{mobileNo}" placeholder="Enter your mobile number" required />
+                    <span class="error-message" th:if="${#fields.hasErrors('mobileNo')}" th:errors="*{mobileNo}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="emailId">Email ID:</label>
+                    <input type="email" id="emailId" th:field="*{emailId}" placeholder="Enter your email address" required />
+                    <span class="error-message" th:if="${#fields.hasErrors('emailId')}" th:errors="*{emailId}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="college">College:</label>
+                    <input type="text" id="college" th:field="*{college}" placeholder="Enter your college name" required />
+                    <span class="error-message" th:if="${#fields.hasErrors('college')}" th:errors="*{college}"></span>
+                </div>
+                <button type="submit" class="submit-button">Start Exam</button>
+            </form>
+            <div class="social-links">
+                <p>Connect with us:</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com" target="_blank">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png" alt="Facebook"/>
+                    </a>
+                    <a href="https://www.instagram.com" target="_blank">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/instagram-new.png" alt="Instagram"/>
+                    </a>
+                    <a href="https://www.linkedin.com" target="_blank">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/linkedin.png" alt="LinkedIn"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

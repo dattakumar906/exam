@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam Result</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        /* Basic styles for layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .result-container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .score-section {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .questions-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .question-text {
+            font-weight: bold;
+        }
+
+        .user-answer {
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+
+        .correct-answer {
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .footer img {
+            width: 50px; /* Adjust size as necessary */
+            vertical-align: middle;
+        }
+
+        .header-image {
+            width: 100%; /* Full width for the header image */
+            height: auto;
+            margin-bottom: 20px; /* Space below the header image */
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <img src="https://rjaytechnologies.com/wp-content/uploads/2024/08/RJ-Technology-Solutions-1.png" alt="Exam Result Header" class="header-image" />
+        <h1>Exam Result</h1>
+        <div class="score-section">
+            <span class="score" th:text="${score}"></span>
+            <span class="out-of"> out of <span th:text="${totalQuestions}"></span></span>
+        </div>
+        
+        <div class="detailed-results">
+            <h2>Detailed Results:</h2>
+            <ul class="questions-list">
+                <li th:each="question, iterStat : ${questions}">
+                    <p class="question-text">
+                        <strong th:text="${iterStat.index + 1} + '. ' + ${question.questionText}"></strong>
+                    </p>
+                    <div class="answers">
+                        <p>
+                            <span th:if="${examResult.userAnswers[iterStat.index] == question.answer}" class="user-answer correct">
+                                <img src="https://img.icons8.com/color/16/000000/checkmark.png" alt="Correct" class="icon"/>
+                                Your Answer: <span th:text="${examResult.userAnswers[iterStat.index]}"></span>
+                            </span>
+                            <span th:if="${examResult.userAnswers[iterStat.index] != question.answer and examResult.userAnswers[iterStat.index] != null}" class="user-answer incorrect">
+                                <img src="https://img.icons8.com/color/16/000000/cancel.png" alt="Incorrect" class="icon"/>
+                                Your Answer: <span th:text="${examResult.userAnswers[iterStat.index]}"></span>
+                            </span>
+                            <span th:if="${examResult.userAnswers[iterStat.index] == null}" class="user-answer incorrect">
+                                <img src="https://img.icons8.com/color/16/000000/cancel.png" alt="No Answer" class="icon"/>
+                                Your Answer: No Answer
+                            </span>
+                        </p>
+                        <p class="correct-answer">
+                            <img src="https://img.icons8.com/color/16/000000/ok.png" alt="Correct Answer" class="icon"/>
+                            Correct Answer: <span th:text="${question.answer}"></span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="footer">
+            <p>Thank you for participating in the exam!</p>
+            <a th:href="@{/exam/leaderboard}" class="leaderboard-link">View Leaderboard</a>
+         </div>
+    </div>
+</body>
+</html>
+ 
