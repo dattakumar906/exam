@@ -1,0 +1,117 @@
+/* File: src/main/resources/static/css/style.css 
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.form-container, .exam-container, .result-container, .leaderboard-container, .error-container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    margin-top: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.form-group, .question-block, .score-section, .detailed-results, .footer {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"], input[type="email"], select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.submit-button, .leaderboard-link, .home-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4285F4;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.submit-button:hover, .leaderboard-link:hover, .home-link:hover {
+    background-color: #357ae8;
+}
+
+.timer {
+    text-align: right;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table th, .leaderboard-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.leaderboard-table th {
+    background-color: #f2f2f2;
+}
+
+.correct {
+    color: green;
+}
+
+.incorrect {
+    color: red;
+}
+
+.icon {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+}
+
+.options label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.score-section {
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.questions-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.question-text {
+    font-weight: bold;
+}
+
+.answers {
+    margin-left: 20px;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+}
+*/

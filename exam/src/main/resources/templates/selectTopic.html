@@ -1,0 +1,154 @@
+<!-- File: src/main/resources/templates/selectTopic.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select Topic</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        body {
+            /* Background image from Google */
+            background-image: url('https://images.unsplash.com/photo-1615392132406-58fdc8f49b83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDJ8fG5hdHVyZSUyMGJsdXUlMjBzdGFydGVyfGVufDB8fHx8MTY5MjA5NTMzMQ&ixlib=rb-1.2.1&q=80&w=1080');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff; /* Text color for contrast */
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for contrast */
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .submit-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Logo styling */
+        .logo {
+            width: 100px; /* Adjust size as needed */
+            margin-bottom: 1rem;
+        }
+
+        /* Social media logos styling */
+        .social-logos {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            gap: 1rem; /* Space between logos */
+        }
+
+        .social-logos img {
+            width: 40px; /* Adjust logo size */
+            height: auto; /* Maintain aspect ratio */
+            transition: transform 0.3s;
+        }
+
+        .social-logos img:hover {
+            transform: scale(1.1); /* Zoom effect on hover */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .form-container {
+                width: 90%;
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .submit-button {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <img src="data:image/jpeg;base64,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" alt="Logo" class="logo"> <!-- Replace with your logo path -->
+        <h1>Select Exam Topic</h1>
+        <form th:action="@{/exam/select-topic}" method="post">
+            <div class="form-group">
+                <label for="topic">Choose a topic:</label>
+                <select id="topic" name="topic" required>
+                    <option value="" disabled selected>Select a topic</option>
+                    <option th:each="topic : ${topics}" th:value="${topic}" th:text="${topic}"></option>
+                </select>
+            </div>
+            <button type="submit" class="submit-button">Start Exam</button>
+        </form>
+
+        <!-- Social Media Logos -->
+        <div class="social-logos">
+            <a href="https://www.facebook.com" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">
+            </a>
+            <a href="https://www.instagram.com" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo">
+            </a>
+            <a href="https://www.linkedin.com" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/01/LinkedIn_Logo.svg" alt="LinkedIn Logo">
+            </a>
+        </div>
+    </div>
+</body>
+</html>
