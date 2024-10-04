@@ -1,0 +1,360 @@
+<!--<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Start Your Exam</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .timer {
+            position: fixed; /* Make the timer fixed */
+            top: 20px; /* Distance from the top */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Adjust for centering */
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            background-color: #e7f5ff;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #c3e6cb;
+            z-index: 1000; /* Ensure it stays on top */
+        }
+
+        .exam-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 100px; /* Space below the fixed timer */
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        label {
+            display: block;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            transition: background 0.3s ease;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        label:hover {
+            background-color: #e9ecef;
+        }
+
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: background 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        // Countdown timer script
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            var countdown = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(countdown);
+                    alert("Time is up! Submitting your exam.");
+                    document.getElementById("examForm").submit();
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            // Set the total time to 15 minutes (900 seconds)
+            var totalTime = 15 * 60; // 15 minutes = 900 seconds
+            var display = document.querySelector('#time');
+            startTimer(totalTime, display);
+        };
+    </script>
+</head>
+<body>
+    <div class="timer">
+        Time Remaining: <span id="time">15:00</span>  Initial display value set to 15 minutes 
+    </div>
+    <div class="exam-container">
+        <form id="examForm" th:action="@{/exam/submit}" th:object="${examForm}" method="post">
+            <div th:each="questionAnswer, iterStat : ${examForm.questionAnswers}" class="question-block">
+                 Hidden field for question ID 
+                <input type="hidden" th:field="*{questionAnswers[__${iterStat.index}__].questionId}" th:value="${questionAnswer.questionId}" />
+
+                 Display the question text 
+                <p class="question-text">
+                    <strong th:text="${iterStat.index + 1} + '. ' + ${questions[iterStat.index].questionText}"></strong>
+                </p>
+
+                 Options 
+                <div class="options">
+                     Option A 
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionA}" />
+                        <span th:text="${questions[iterStat.index].optionA}"></span>
+                    </label>
+
+                     Option B 
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionB}" />
+                        <span th:text="${questions[iterStat.index].optionB}"></span>
+                    </label>
+
+                     Option C 
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionC}" />
+                        <span th:text="${questions[iterStat.index].optionC}"></span>
+                    </label>
+
+                     Option D 
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionD}" />
+                        <span th:text="${questions[iterStat.index].optionD}"></span>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="submit-button">Submit Exam</button>
+        </form>
+    </div>
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Start Your Exam</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .timer {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            background-color: #e7f5ff;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #c3e6cb;
+            z-index: 1000;
+        }
+
+        .exam-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 100px;
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        label {
+            display: block;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            transition: background 0.3s ease;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        label:hover {
+            background-color: #e9ecef;
+        }
+
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            transition: background 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+<script>
+    // Countdown timer script
+    function startTimer(duration, display) {
+        let timer = duration, minutes, seconds;
+        const countdown = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(countdown);
+                alert("Time is up! Submitting your exam.");
+                document.getElementById("examForm").submit();
+            }
+        }, 1000);
+    }
+
+    // Warn the user when they try to leave the page during the exam
+    let isSubmitted = false; // Flag to track if the exam has been submitted
+
+    window.addEventListener('beforeunload', function (e) {
+        if (!isSubmitted) { // Only show the alert if the exam has not been submitted
+            e.preventDefault();
+            e.returnValue = 'You have an ongoing exam. Are you sure you want to leave?';
+        }
+    });
+
+    // Monitor focus changes
+    let warned = false;
+
+    window.addEventListener('blur', function () {
+        if (!warned && !isSubmitted) { // Check if the exam hasn't been submitted
+            warned = true;
+            const userResponse = confirm("You are leaving the exam page. Please stay focused on the exam. Would you like to submit the exam?");
+            if (userResponse) {
+                alert("Submitting your exam.");
+                document.getElementById("examForm").submit();
+                isSubmitted = true; // Set the flag to true after submission
+            } else {
+                alert("You can continue your exam.");
+            }
+        }
+    });
+
+    // Reset warned flag on focus
+    window.addEventListener('focus', function () {
+        if (document.hasFocus()) {
+            warned = false; // Reset the warning when the user comes back to the page
+        }
+    });
+
+    window.onload = function () {
+        var totalTime = 45 * 60; // 15 minutes
+        var display = document.querySelector('#time');
+        startTimer(totalTime, display);
+    };
+</script>
+
+
+</head>
+<body>
+    <div class="timer">
+        Time Remaining: <span id="time">45:00</span>
+    </div>
+    <div class="exam-container">
+        <!-- Add logo images at the top -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="data:image/jpeg;base64,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" alt="Logo 1" style="width: 100px; height: auto; margin: 0 10px;"/>
+         </div>
+        <form id="examForm" th:action="@{/exam/submit}" th:object="${examForm}" method="post" onsubmit="return confirm('Are you sure you want to submit the exam?');">
+            <div th:each="questionAnswer, iterStat : ${examForm.questionAnswers}" class="question-block">
+                <!-- Add a logo for each question if needed -->
+                 
+                <input type="hidden" th:field="*{questionAnswers[__${iterStat.index}__].questionId}" th:value="${questionAnswer.questionId}" />
+                <p class="question-text">
+                    <strong th:text="${iterStat.index + 1} + '. ' + ${questions[iterStat.index].questionText}"></strong>
+                </p>
+                <div class="options">
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionA}" />
+                        <span th:text="${questions[iterStat.index].optionA}"></span>
+                    </label>
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionB}" />
+                        <span th:text="${questions[iterStat.index].optionB}"></span>
+                    </label>
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionC}" />
+                        <span th:text="${questions[iterStat.index].optionC}"></span>
+                    </label>
+                    <label>
+                        <input type="radio" th:field="*{questionAnswers[__${iterStat.index}__].answer}" th:value="${questions[iterStat.index].optionD}" />
+                        <span th:text="${questions[iterStat.index].optionD}"></span>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="submit-button">Submit Exam</button>
+        </form>
+    </div>
+</body>
+</html>

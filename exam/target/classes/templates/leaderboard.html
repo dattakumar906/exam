@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Leaderboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div class="leaderboard-container">
+        <h1>Leaderboard</h1>
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="result, iterStat : ${topResults}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td th:text="${result.name}"></td>
+                    <td th:text="${result.score}"></td>
+                    <td th:text="${#dates.format(result.endTime, 'HH:mm:ss')}"></td> <!-- Format end time as needed -->
+                </tr>
+            </tbody>
+        </table>
+        <div class="footer">
+            <a th:href="@{/exam/start}" class="start-exam-link">Take the Exam Again</a>
+        </div>
+    </div>
+</body>
+</html>
