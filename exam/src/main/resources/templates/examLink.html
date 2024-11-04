@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam Link - Online Exam Portal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #22c55e;
+            --background-color: #f1f5f9;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2fe, #ede9fe);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--white);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .exam-link-box {
+            background: #f0f9ff;
+            border: 2px solid var(--primary-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .exam-link-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .exam-link {
+            color: var(--primary-color);
+            font-weight: 500;
+            flex-grow: 1;
+            margin-right: 1rem;
+        }
+
+        .copy-icon {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+        }
+
+        .instructions {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .instructions h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .instruction-list {
+            list-style: none;
+        }
+
+        .instruction-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .instruction-list i {
+            color: var(--primary-color);
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .whatsapp { background-color: #25D366; }
+        .linkedin { background-color: #0077B5; }
+        .twitter { background-color: #1DA1F2; }
+        .email { background-color: #EA4335; }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary-color);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-tooltip {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--success-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            display: none;
+            animation: fadeInOut 1.5s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+
+            .share-buttons {
+                flex-direction: column;
+            }
+
+            .share-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your Exam Link is Ready!</h1>
+            <p>Share this link with students to start the exam</p>
+        </div>
+
+        <div class="content">
+            <div class="exam-link-box" onclick="copyToClipboard()">
+                <span class="exam-link" th:text="${examLink}">https://examportal.com/exam/12345</span>
+                <i class="fas fa-copy copy-icon"></i>
+            </div>
+
+            <div class="exam-details">
+                <p><strong>Number of Questions:</strong> <span th:text="${numberOfQuestions}">20</span></p>
+                <p><strong>Duration:</strong> <span th:text="${duration}">60 minutes</span></p>
+            </div>
+
+            <div class="instructions">
+                <h3>Important Instructions</h3>
+                <ul class="instruction-list">
+                    <li>
+                        <i class="fas fa-wifi"></i>
+                        Ensure stable internet connection throughout the exam
+                    </li>
+                    <li>
+                        <i class="fas fa-clock"></i>
+                        Complete the exam in one sitting
+                    </li>
+                    <li>
+                        <i class="fas fa-id-card"></i>
+                        Keep your student ID ready before starting
+                    </li>
+                    <li>
+                        <i class="fas fa-ban"></i>
+                        Browser back button is disabled during the exam
+                    </li>
+                </ul>
+            </div>
+
+            <div class="share-buttons">
+                <button onclick="shareViaWhatsApp()" class="share-button whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button onclick="shareViaLinkedIn()" class="share-button linkedin">
+                    <i class="fab fa-linkedin"></i> LinkedIn
+                </button>
+                <button onclick="shareViaTwitter()" class="share-button twitter">
+                    <i class="fab fa-twitter"></i> Twitter
+                </button>
+                <button onclick="shareViaEmail()" class="share-button email">
+                    <i class="fas fa-envelope"></i> Email
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Need help? <a href="#" class="support-link">Contact Support</a></p>
+        </div>
+    </div>
+
+    <div id="copyTooltip" class="copy-tooltip">Link copied!</div>
+
+    <script th:inline="javascript">
+        function copyToClipboard() {
+            const examLink = /*[[${examLink}]]*/ 'https://examportal.com/exam/12345';
+            navigator.clipboard.writeText(examLink).then(() => {
+                const tooltip = document.getElementById('copyTooltip');
+                tooltip.style.display = 'block';
+                setTimeout(() => {
+                    tooltip.style.display = 'none';
+                }, 1500);
+            });
+        }
+
+        function shareViaWhatsApp() {
+            const examLink = /*[[${examLink}]]*/ 'https://examportal.com/exam/12345';
+            window.open(`https://wa.me/?text=${encodeURIComponent(examLink)}`);
+        }
+
+        function shareViaLinkedIn() {
+            const examLink = /*[[${examLink}]]*/ 'https://examportal.com/exam/12345';
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(examLink)}`);
+        }
+
+        function shareViaTwitter() {
+            const examLink = /*[[${examLink}]]*/ 'https://examportal.com/exam/12345';
+            window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(examLink)}`);
+        }
+
+        function shareViaEmail() {
+            const examLink = /*[[${examLink}]]*/ 'https://examportal.com/exam/12345';
+            window.open(`mailto:?subject=Exam Link&body=${encodeURIComponent(examLink)}`);
+        }
+    </script>
+</body>
+</html>

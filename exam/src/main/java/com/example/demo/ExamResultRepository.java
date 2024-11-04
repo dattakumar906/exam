@@ -1,4 +1,3 @@
-// File: src/main/java/com/example/demo/ExamResultRepository.java
 package com.example.demo;
 
 import java.util.List;
@@ -11,7 +10,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
-    List<ExamResult> findTopByOrderByScoreDescStartTimeAsc(Pageable pageable);
+    
+    // This method fetches top 10 overall results sorted by score
+    @Query(value = "SELECT er FROM ExamResult er ORDER BY er.score DESC, er.startTime ASC")
+    List<ExamResult> findTop10Overall(Pageable pageable);
 
- 
+    // Fetch top 10 results by topic
+    @Query(value = "SELECT er FROM ExamResult er WHERE er.topic = :topic ORDER BY er.score DESC, er.startTime ASC")
+    List<ExamResult> findTop10ByTopic(@Param("topic") String topic, Pageable pageable);
 }

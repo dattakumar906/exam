@@ -1,6 +1,8 @@
 // File: src/main/java/com/example/demo/ExamResult.java
 package com.example.demo;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -21,6 +23,7 @@ public class ExamResult {
     private String mobileNo;
     private String emailId;
     private String college;
+    private Integer totalTimeTaken; // Total time taken to complete the exam
 
     private int score;
     private int totalQuestions; // Total number of questions
@@ -31,6 +34,11 @@ public class ExamResult {
     @ElementCollection
     private List<String> userAnswers; // Store user's selected answers
 
-    private Long startTime; // Epoch time in milliseconds
-    private Long endTime; // Epoch time in milliseconds
+    private LocalDate examDate; // Local date for the exam date
+
+    private LocalDateTime startTime; // Local date and time
+    private LocalDateTime endTime; // Local date and time
+    
+    private String topic;
+    
 }

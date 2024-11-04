@@ -3,15 +3,14 @@
 <head>
     <title>Exam Result</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Basic styles for layout */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f4f8;
             margin: 0;
             padding: 20px;
         }
-
         .result-container {
             max-width: 800px;
             margin: auto;
@@ -19,101 +18,276 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
         }
-
-        .score-section {
-            font-size: 24px;
+        .score-section, .detailed-results {
             margin-bottom: 20px;
         }
-
         .questions-list {
             list-style-type: none;
             padding: 0;
         }
-
         .question-text {
             font-weight: bold;
         }
-
-        .user-answer {
-            margin-top: 5px;
-            font-size: 16px;
-        }
-
-        .correct {
+        .user-answer.correct {
             color: green;
         }
-
-        .incorrect {
+        .user-answer.incorrect, .correct-answer {
             color: red;
         }
-
-        .correct-answer {
-            font-style: italic;
-            margin-top: 10px;
-        }
-
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .footer img {
-            width: 50px; /* Adjust size as necessary */
-            vertical-align: middle;
-        }
-
         .header-image {
-            width: 100%; /* Full width for the header image */
+            width: 100%;
             height: auto;
-            margin-bottom: 20px; /* Space below the header image */
+            margin-bottom: 20px;
+        }
+        .action-buttons {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #28a745;
+            transition: width 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        .certificate {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #gold;
+            border-radius: 8px;
+        }
+        .certificate h2 {
+            color: #2c3e50;
+        }
+        .timestamp {
+            font-style: italic;
+            color: #666;
+            text-align: right;
+        }
+        @media print {
+            .action-buttons {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="result-container">
+    <div class="action-buttons">
+        <button onclick="downloadPDF()" class="btn btn-primary">Download PDF</button>
+        <button onclick="window.print()" class="btn btn-secondary">Print Result</button>
+        <button onclick="shareResult()" class="btn btn-primary">Share Result</button>
+    </div>
+
+    <div class="result-container" id="result-content">
         <img src="https://rjaytechnologies.com/wp-content/uploads/2024/08/RJ-Technology-Solutions-1.png" alt="Exam Result Header" class="header-image" />
         <h1>Exam Result</h1>
+        
+        <div class="progress-bar">
+            <div class="progress" th:style="'width: ' + ${(score * 100 / totalQuestions)} + '%'" 
+                 th:text="${(score * 100 / totalQuestions)} + '%'">
+            </div>
+        </div>
+
         <div class="score-section">
-            <span class="score" th:text="${score}"></span>
-            <span class="out-of"> out of <span th:text="${totalQuestions}"></span></span>
+            <h2>Final Score</h2>
+            <p class="score">
+                <span th:text="${score}"></span> out of <span th:text="${totalQuestions}"></span>
+                (<span th:text="${#numbers.formatDecimal((score * 100 / totalQuestions), 1, 1)}"></span>%)
+            </p>
         </div>
         
         <div class="detailed-results">
             <h2>Detailed Results:</h2>
             <ul class="questions-list">
+                <!-- Existing question list content remains the same -->
                 <li th:each="question, iterStat : ${questions}">
                     <p class="question-text">
-                        <strong th:text="${iterStat.index + 1} + '. ' + ${question.questionText}"></strong>
+                        <strong th:text="${iterStat.index + 1} + '. '"></strong>
+                        <span th:if="${question.questionContent != null && 
+                                     (question.questionContent.endsWith('.jpg') || 
+                                      question.questionContent.endsWith('.png') || 
+                                      question.questionContent.endsWith('.jpeg'))}">
+                            <img th:src="${question.questionContent}" alt="Question Image" style="max-width: 100%;" />
+                        </span>
+                        <span th:if="${question.questionContent != null && 
+                                     !(question.questionContent.endsWith('.jpg') || 
+                                       question.questionContent.endsWith('.png') || 
+                                       question.questionContent.endsWith('.jpeg'))}" 
+                              th:text="${question.questionContent}"></span>
                     </p>
                     <div class="answers">
-                        <p>
-                            <span th:if="${examResult.userAnswers[iterStat.index] == question.answer}" class="user-answer correct">
-                                <img src="https://img.icons8.com/color/16/000000/checkmark.png" alt="Correct" class="icon"/>
-                                Your Answer: <span th:text="${examResult.userAnswers[iterStat.index]}"></span>
+                        <p th:if="${examResult.userAnswers != null && iterStat.index < examResult.userAnswers.size() &&
+                                   examResult.userAnswers[iterStat.index] == question.correctAnswer}" 
+                           class="user-answer correct">
+                            <img src="https://img.icons8.com/color/16/000000/checkmark.png" alt="Correct" class="icon"/>
+                            Your Answer: 
+                            <span th:if="${examResult.userAnswers[iterStat.index] != null && 
+                                         (examResult.userAnswers[iterStat.index].endsWith('.jpg') || 
+                                          examResult.userAnswers[iterStat.index].endsWith('.png') || 
+                                          examResult.userAnswers[iterStat.index].endsWith('.jpeg'))}">
+                                <img th:src="${examResult.userAnswers[iterStat.index]}" alt="Your Answer Image" style="max-width: 100px;" />
                             </span>
-                            <span th:if="${examResult.userAnswers[iterStat.index] != question.answer and examResult.userAnswers[iterStat.index] != null}" class="user-answer incorrect">
-                                <img src="https://img.icons8.com/color/16/000000/cancel.png" alt="Incorrect" class="icon"/>
-                                Your Answer: <span th:text="${examResult.userAnswers[iterStat.index]}"></span>
+                            <span th:if="${examResult.userAnswers[iterStat.index] != null && 
+                                         !(examResult.userAnswers[iterStat.index].endsWith('.jpg') || 
+                                           examResult.userAnswers[iterStat.index].endsWith('.png') || 
+                                           examResult.userAnswers[iterStat.index].endsWith('.jpeg'))}" 
+                                  th:text="${examResult.userAnswers[iterStat.index]}"></span>
+                        </p>
+                        <p th:if="${examResult.userAnswers != null && iterStat.index < examResult.userAnswers.size() &&
+                                   examResult.userAnswers[iterStat.index] != question.correctAnswer}" 
+                           class="user-answer incorrect">
+                            <img src="https://img.icons8.com/color/16/000000/cancel.png" alt="Incorrect" class="icon"/>
+                            Your Answer: 
+                            <span th:if="${examResult.userAnswers[iterStat.index] != null && 
+                                         (examResult.userAnswers[iterStat.index].endsWith('.jpg') || 
+                                          examResult.userAnswers[iterStat.index].endsWith('.png') || 
+                                          examResult.userAnswers[iterStat.index].endsWith('.jpeg'))}">
+                                <img th:src="${examResult.userAnswers[iterStat.index]}" alt="Your Answer Image" style="max-width: 100px;" />
                             </span>
-                            <span th:if="${examResult.userAnswers[iterStat.index] == null}" class="user-answer incorrect">
-                                <img src="https://img.icons8.com/color/16/000000/cancel.png" alt="No Answer" class="icon"/>
-                                Your Answer: No Answer
-                            </span>
+                            <span th:if="${examResult.userAnswers[iterStat.index] != null && 
+                                         !(examResult.userAnswers[iterStat.index].endsWith('.jpg') || 
+                                           examResult.userAnswers[iterStat.index].endsWith('.png') || 
+                                           examResult.userAnswers[iterStat.index].endsWith('.jpeg'))}" 
+                                  th:text="${examResult.userAnswers[iterStat.index]}"></span>
                         </p>
                         <p class="correct-answer">
                             <img src="https://img.icons8.com/color/16/000000/ok.png" alt="Correct Answer" class="icon"/>
-                            Correct Answer: <span th:text="${question.answer}"></span>
+                            Correct Answer: 
+                            <span th:if="${question.correctAnswer != null && 
+                                         (question.correctAnswer.endsWith('.jpg') || 
+                                          question.correctAnswer.endsWith('.png') || 
+                                          question.correctAnswer.endsWith('.jpeg'))}">
+                                <img th:src="${question.correctAnswer}" alt="Correct Answer Image" style="max-width: 100px;" />
+                            </span>
+                            <span th:if="${question.correctAnswer != null && 
+                                         !(question.correctAnswer.endsWith('.jpg') || 
+                                           question.correctAnswer.endsWith('.png') || 
+                                           question.correctAnswer.endsWith('.jpeg'))}" 
+                                  th:text="${question.correctAnswer}"></span>
                         </p>
                     </div>
                 </li>
             </ul>
         </div>
+
+        <div class="certificate" th:if="${(score * 100 / totalQuestions) >= 60}">
+            <h2>Certificate of Completion</h2>
+            <p>This is to certify that you have successfully completed the exam with a score of 
+               <strong th:text="${#numbers.formatDecimal((score * 100 / totalQuestions), 1, 1)} + '%'"></strong>
+            </p>
+            <p class="timestamp" th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy HH:mm')}"></p>
+        </div>
+
         <div class="footer">
             <p>Thank you for participating in the exam!</p>
-            <a th:href="@{/exam/leaderboard}" class="leaderboard-link">View Leaderboard</a>
-         </div>
+            <a th:href="@{/exam/leaderboard}" class="btn btn-primary">View Leaderboard</a>
+        </div>
     </div>
+
+    <script th:inline="javascript">
+       function downloadPDF() {
+    var element = document.getElementById('result-content');
+    
+    // Check if the element is available
+    if (element) {
+        // Add a short delay to ensure that the content is fully loaded
+        setTimeout(() => {
+            var opt = {
+                margin: 0.5,
+                filename: 'exam-result.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 3 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+        
+            // Capture the content
+            html2pdf().from(element).set(opt).save().then(() => {
+                console.log('PDF downloaded successfully.');
+            }).catch(err => {
+                console.error('Failed to generate PDF: ', err);
+            });
+        }, 500); // Adjust the delay as needed
+    } else {
+        alert('Content not found. Please check the element ID.');
+    }
+}
+
+        function shareResult() {
+            const score = [[${score}]];
+            const total = [[${totalQuestions}]];
+            const percentage = (score * 100 / total).toFixed(1);
+            
+            const shareText = `I scored ${percentage}% (${score}/${total}) in my exam!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Exam Result',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                const dummy = document.createElement('textarea');
+                document.body.appendChild(dummy);
+                dummy.value = `${shareText}\n${window.location.href}`;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+                alert('Result link copied to clipboard!');
+            }
+        }
+
+        // Add animation to progress bar
+        document.addEventListener('DOMContentLoaded', function() {
+            const progress = document.querySelector('.progress');
+            progress.style.width = '0%';
+            setTimeout(() => {
+                progress.style.width = progress.getAttribute('data-width') + '%';
+            }, 100);
+        });
+    </script>
 </body>
 </html>
- 

@@ -39,9 +39,13 @@ public class ExamService {
         examResultRepository.save(examResult);
     }
 
-    public List<ExamResult> getTopExamResults(int limit) {
-        return examResultRepository.findTopByOrderByScoreDescStartTimeAsc(PageRequest.of(0, limit));
-    }
     
-     
+
+    public List<Question> getRandomQuestionsByTopic(String topic, int limit) {
+        return questionRepository.findRandomQuestionsByTopic(topic).stream()
+                .limit(limit)
+                .toList();
+    }
+
+    
 }

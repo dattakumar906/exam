@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam Portal</title>
+    <style>
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .chatbot-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .chatbot-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.875rem;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .chatbot-body {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            max-width: 85%;
+            padding: 12px;
+            border-radius: 12px;
+            position: relative;
+            clear: both;
+        }
+
+        .message.user {
+            background: #2563eb;
+            color: white;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.bot {
+            background: white;
+            border: 1px solid #e2e8f0;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.system {
+            background: #f1f5f9;
+            color: #64748b;
+            text-align: center;
+            margin: 16px auto;
+            clear: both;
+            float: none;
+            display: inline-block;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .chatbot-input {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chatbot-input input:focus {
+            border-color: #2563eb;
+        }
+
+        .chatbot-input button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .chatbot-input button:hover {
+            background: #1d4ed8;
+        }
+
+        .chatbot-container.minimized .chatbot-body {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .chatbot-container {
+                width: calc(100% - 40px);
+                bottom: 10px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Your existing exam portal content -->
+    <div id="chat-container"></div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-container" id="chatbot">
+        <div class="chatbot-header" onclick="toggleChat()">
+            <div class="chatbot-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Exam Assistant
+            </div>
+            <div class="chatbot-status">
+                <div class="status-indicator"></div>
+                <span id="connection-status">Connecting...</span>
+            </div>
+        </div>
+        <div class="chatbot-body">
+            <div class="chatbot-messages" id="chat-messages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-input" placeholder="Type your question..." />
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch chat.html content and inject it into the chat-container
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/exam/exam/chat')
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.text();
+                })
+                .then(html => {
+                    console.log("Fetched HTML:", html);
+                    document.getElementById('chat-container').innerHTML = html;
+                })
+                .catch(error => console.error("Error fetching chat.html:", error));
+        });
+
+        // Chatbot knowledge base
+        const chatbotResponses = {
+            'topic': `To select a topic:
+                1. Use the dropdown menu at the top
+                2. Browse available subjects
+                3. Click to select your preferred topic
+                4. System will show available questions`,
+                
+            'questions': `To add questions:
+                1. Click "Add Question" in the menu
+                2. Fill in question details
+                3. Select topic and difficulty
+                4. Add answer options
+                5. Mark correct answer
+                6. Save your question`,
+                
+            'duration': `Exam duration guidelines:
+                • Beginner: 30 minutes
+                • Intermediate: 45 minutes
+                • Advanced: 60 minutes
+                Tip: Allow 1.5-2 minutes per question`,
+                
+            'start': `To start an exam:
+                1. Select your topic
+                2. Choose number of questions
+                3. Set the duration
+                4. Pick difficulty level
+                5. Click "Start Exam"`,
+                
+            'difficulty': `Difficulty levels:
+                • Beginner: Basic concepts
+                • Intermediate: Applied knowledge
+                • Advanced: Complex scenarios`,
+                
+            'help': `I can help with:
+                • Selecting topics
+                • Adding questions
+                • Setting duration
+                • Starting exams
+                • Choosing difficulty
+                What would you like to know?`
+        };
+
+        let isMinimized = false;
+function toggleChat() {
+    const chatbot = document.getElementById('chatbot');
+    console.log('Chatbot clicked, isMinimized before toggle:', isMinimized);
+    chatbot.classList.toggle('minimized');
+    isMinimized = chatbot.classList.contains('minimized');
+    console.log('Chatbot state after toggle:', isMinimized);
+}
+
+
+        function addMessage(text, type) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const time = new Date().toLocaleTimeString();
+            messageDiv.innerHTML = `
+                ${text}
+                <div class="message-time">${time}</div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function processUserInput(input) {
+            const lowerInput = input.toLowerCase();
+            let response = '';
+
+            // Match keywords to responses
+            if (lowerInput.includes('topic') || lowerInput.includes('subject')) {
+                response = chatbotResponses.topic;
+            } else if (lowerInput.includes('question') || lowerInput.includes('add')) {
+                response = chatbotResponses.questions;
+            } else if (lowerInput.includes('time') || lowerInput.includes('duration')) {
+                response = chatbotResponses.duration;
+            } else if (lowerInput.includes('start') || lowerInput.includes('begin')) {
+                response = chatbotResponses.start;
+            } else if (lowerInput.includes('difficulty') || lowerInput.includes('level')) {
+                response = chatbotResponses.difficulty;
+            } else if (lowerInput.includes('help')) {
+                response = chatbotResponses.help;
+            } else {
+                response = "I'm not sure about that. Try asking about topics, questions, duration, starting exams, or difficulty levels.";
+            }
+
+            return response;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                addMessage(message, 'user');
+                
+                // Get response and add bot message
+                const botResponse = processUserInput(message);
+                addMessage(botResponse, 'bot');
+
+                // Clear input
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>

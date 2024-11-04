@@ -1,183 +1,147 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>User Registration</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <title>Student Registration - IExam Portal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #f0f4f8, #d9e3f0);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+            min-height: 100vh;
         }
-
-        .container {
-            display:contents; /* Flex container for side-by-side layout */
-            align-items: flex-start; /* Aligns images and form to the top */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        .image-container {
-            display: flex;
-            flex-direction: column; /* Stack images vertically */
-            margin-right: 20px; /* Space between images and form */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-
-        .image-container img {
-            max-width: 600%; /* Responsive width */
-            max-height: 150px; /* Maximum height for images */
-            object-fit: cover; /* Cover the area without stretching */
-            margin-bottom: 10px; /* Space between images */
-            border-radius: 8px; /* Rounded corners for images */
-            transition: transform 0.3s ease; /* Image hover effect */
-        }
-
-        .image-container img:hover {
-            transform: scale(1.05); /* Scale up on hover */
-        }
-
-        .form-container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px; /* Fixed width for the form */
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 12px;
-        }
-
-        .submit-button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .submit-button:hover {
-            background-color: #0056b3;
-        }
-
-        .social-links {
-            margin-top: 20px;
-        }
-
-        .social-links a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #333;
-            font-size: 20px;
-            transition: color 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: #007bff;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .social-icons img {
-            width: 30px;
-            height: 30px;
-            margin: 0 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .social-icons img:hover {
-            transform: scale(1.1);
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="image-container">
-            <img src="https://media.licdn.com/dms/image/v2/D5622AQF6uSI_bqWtlw/feedshare-shrink_800/feedshare-shrink_800/0/1725003922287?e=2147483647&v=beta&t=qLUzv2EGvpLWI-Sc9ochOypuywsnVol-uXFCOx90Krc" alt="Brand Image 1" />
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6R3iEaqyFBjxTwTtIh7qZ8ilFHsqLaK9wGyZWUtNBWyfVn-YGKl3kUODuT6_3mDt0uwY&usqp=CAU" alt="Brand Image 2" />
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbs2lODGv003f5qr1D6p8buG8oHQq1dx-naQ&s" alt="Brand Image 3" />
-        </div>
-        
-        <div class="form-container">
-            <h1>Enter Your Details</h1>
-            <form th:action="@{/exam/register}" th:object="${userDetails}" method="post">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" th:field="*{name}" placeholder="Enter your name" required />
-                    <span class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="max-w-4xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Side - Information -->
+        <div class="space-y-6">
+            <div class="glass-effect rounded-2xl p-8 text-white bg-gradient-to-br from-blue-600 to-indigo-600">
+                <div class="flex items-center justify-center mb-6">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
                 </div>
-                <div class="form-group">
-                    <label for="mobileNo">Mobile Number:</label>
-                    <input type="text" id="mobileNo" th:field="*{mobileNo}" placeholder="Enter your mobile number" required />
-                    <span class="error-message" th:if="${#fields.hasErrors('mobileNo')}" th:errors="*{mobileNo}"></span>
+                <h2 class="text-2xl font-bold mb-4">Welcome to IExam Portal</h2>
+                <p class="mb-6">Join thousands of students taking online exams with our secure and user-friendly platform.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Secure examination environment</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Real-time results and analytics</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Multiple question formats</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="emailId">Email ID:</label>
-                    <input type="email" id="emailId" th:field="*{emailId}" placeholder="Enter your email address" required />
-                    <span class="error-message" th:if="${#fields.hasErrors('emailId')}" th:errors="*{emailId}"></span>
-                </div>
-                <div class="form-group">
-                    <label for="college">College:</label>
-                    <input type="text" id="college" th:field="*{college}" placeholder="Enter your college name" required />
-                    <span class="error-message" th:if="${#fields.hasErrors('college')}" th:errors="*{college}"></span>
-                </div>
-                <button type="submit" class="submit-button">Start Exam</button>
-            </form>
-            <div class="social-links">
-                <p>Connect with us:</p>
-                <div class="social-icons">
-                    <a href="https://www.facebook.com" target="_blank">
-                        <img src="https://img.icons8.com/ios-filled/50/000000/facebook-new.png" alt="Facebook"/>
+            </div>
+
+            <div class="glass-effect rounded-2xl p-8 text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Need Help?</h3>
+                <p class="text-gray-600 mb-4">Contact our support team for assistance</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="#" class="text-blue-600 hover:text-blue-700 transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"></path>
+                        </svg>
                     </a>
-                    <a href="https://www.instagram.com" target="_blank">
-                        <img src="https://img.icons8.com/ios-filled/50/000000/instagram-new.png" alt="Instagram"/>
+                    <a href="#" class="text-blue-600 hover:text-blue-700 transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z"></path>
+                        </svg>
                     </a>
-                    <a href="https://www.linkedin.com" target="_blank">
-                        <img src="https://img.icons8.com/ios-filled/50/000000/linkedin.png" alt="LinkedIn"/>
+                    <a href="#" class="text-blue-600 hover:text-blue-700 transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
+                        </svg>
                     </a>
                 </div>
             </div>
+        </div>
+
+        <!-- Right Side - Registration Form -->
+        <div class="glass-effect rounded-2xl p-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Student Registration</h1>
+            <form th:action="@{/exam/register}" th:object="${userDetails}" method="post" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input 
+                        type="text" 
+                        th:field="*{name}" 
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your full name"
+                        required
+                    >
+                    <span th:if="${#fields.hasErrors('name')}" class="text-sm text-red-500" th:errors="*{name}"></span>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                    <input 
+                        type="tel" 
+                        th:field="*{mobileNo}" 
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your mobile number"
+                        required
+                    >
+                    <span th:if="${#fields.hasErrors('mobileNo')}" class="text-sm text-red-500" th:errors="*{mobileNo}"></span>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input 
+                        type="email" 
+                        th:field="*{emailId}" 
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your email address"
+                        required
+                    >
+                    <span th:if="${#fields.hasErrors('emailId')}" class="text-sm text-red-500" th:errors="*{emailId}"></span>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">College Name</label>
+                    <input 
+                        type="text" 
+                        th:field="*{college}" 
+                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your college name"
+                        required
+                    >
+                    <span th:if="${#fields.hasErrors('college')}" class="text-sm text-red-500" th:errors="*{college}"></span>
+                </div>
+
+                <button 
+                    type="submit"
+                    class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
+                >
+                    Start Exam
+                </button>
+            </form>
         </div>
     </div>
 </body>
