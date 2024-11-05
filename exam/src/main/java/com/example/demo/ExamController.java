@@ -51,6 +51,20 @@ public class ExamController {
     public String showAddQuestionPage() {
         return "AddQuestion";  // Returns the AddQuestion.html file in the templates folder
     }
+    @GetMapping("AddQuestion")
+    public String showAddQuestionPage2() {
+        return "pdf";  // Returns the AddQuestion.html file in the templates folder
+    }
+    
+    @GetMapping("examResult")
+    public String showAddQuestionPage3() {
+        return "examResults";  // Returns the AddQuestion.html file in the templates folder
+    }
+    @GetMapping("examResultsPdf")
+    public String showAddQuestionPage4() {
+        return "examResultsPdf";  // Returns the AddQuestion.html file in the templates folder
+    }
+    
     @GetMapping("/exam/chat")
     public String showAddQuestionPage1() {
         return "chat";  // Returns the AddQuestion.html file in the templates folder

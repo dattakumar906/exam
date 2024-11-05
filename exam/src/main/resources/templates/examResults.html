@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam Results</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMl52wV1jV2B9Y9v5kn2QKwx1cQ4oCj0jlj5" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"],
+        input[type="date"],
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        .download-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .filter-container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .filter-container > div:last-child {
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Exam Results</h1>
+
+    <form action="#" th:action="@{/filtered-exam-results}" method="get">
+        <div class="filter-container">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" th:value="${name}"/>
+            </div>
+            <div>
+                <label for="college">College:</label>
+                <input type="text" id="college" name="college" th:value="${college}"/>
+            </div>
+            <div>
+                <label for="topic">Topic:</label>
+                <input type="text" id="topic" name="topic" th:value="${topic}"/>
+            </div>
+            <div>
+                <label for="examDate">Date:</label>
+                <input type="date" id="examDate" name="examDate" th:value="${examDate}"/>
+            </div>
+            <div>
+                <label for="scoreRange">Score Range:</label>
+                <select id="scoreRange" name="scoreRange">
+                    <option value="">Select</option>
+                    <option value="0-50">0 - 50</option>
+                    <option value="51-75">51 - 75</option>
+                    <option value="76-100">76 - 100</option>
+                </select>
+            </div>
+            <div>
+                <label for="totalQuestions">Total Questions:</label>
+                <select id="totalQuestions" name="totalQuestions">
+                    <option value="">Select</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit"><i class="fas fa-search"></i> Search</button>
+    </form>
+
+    <h2>Filtered Exam Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>College</th>
+                <th>Score</th>
+                <th>Total Questions</th>
+                <th>Topic</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="result : ${examResults}">
+                <td th:text="${result.name}"></td>
+                <td th:text="${result.college}"></td>
+                <td th:text="${result.score}"></td>
+                <td th:text="${result.totalQuestions}"></td>
+                <td th:text="${result.topic}"></td>
+                <td th:text="${result.examDate}"></td>
+                <td th:text="${result.startTime}"></td>
+                <td th:text="${result.endTime}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="download-section">
+        <h2>Download Filtered Exam Results</h2>
+        <form action="#" th:action="@{/download-exam-results}" method="get">
+            <input type="hidden" name="name" th:value="${name}"/>
+            <input type="hidden" name="college" th:value="${college}"/>
+            <input type="hidden" name="topic" th:value="${topic}"/>
+            <input type="hidden" name="examDate" th:value="${examDate}"/>
+            <button type="submit"><i class="fas fa-download"></i> Download as PDF</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Exam Portal. All rights reserved.</p>
+    </div>
+</body>
+</html>

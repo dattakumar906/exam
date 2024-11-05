@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam Results PDF</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exam Results</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>College</th>
+                <th>Score</th>
+                <th>Total Questions</th>
+                <th>Topic</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="result : ${examResults}">
+                <td th:text="${result.name}"></td>
+                <td th:text="${result.college}"></td>
+                <td th:text="${result.score}"></td>
+                <td th:text="${result.totalQuestions}"></td>
+                <td th:text="${result.topic}"></td>
+                <td th:text="${result.examDate}"></td>
+                <td th:text="${result.startTime}"></td>
+                <td th:text="${result.endTime}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
